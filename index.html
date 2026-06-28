@@ -78,6 +78,8 @@ h1{font-size:28px;font-weight:700;margin-bottom:4px}
 .goal-badge.partial{background:var(--amber-light);border-color:var(--amber);color:var(--amber)}
 .goal-badge.missed{background:var(--red-bg);border-color:var(--red-border);color:var(--red-text)}
 .goal-badge.pending{background:var(--purple-light);border-color:var(--purple-mid);color:var(--purple-darker)}
+.goal-badge.almost{background:var(--amber-light);border-color:var(--amber);color:var(--amber)}
+.goal-badge.none{background:var(--bg);border-color:var(--border2);color:var(--text2)}
 .sick-note{font-size:11px;color:var(--amber);font-weight:500}
 
 /* Day pills */
@@ -89,9 +91,24 @@ h1{font-size:28px;font-weight:700;margin-bottom:4px}
 .day-pill.planned .dn,.day-pill.planned .dd{color:var(--purple-dark)}
 .day-pill.done{background:var(--purple);border-color:var(--purple)}
 .day-pill.done .dn,.day-pill.done .dd{color:white}
+/* erledigt, aber NICHT geplant: lila gefüllt mit deutlich gestricheltem Rand.
+   SVG-Overlay statt border:dashed → exakt gleich lange weiße Striche und Lücken. */
+.day-pill.done.unplanned{border-color:transparent}
+.day-pill.done.unplanned::before{
+  content:'';position:absolute;inset:-1.5px;border-radius:50%;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='47' fill='none' stroke='white' stroke-width='6' stroke-dasharray='9.84 9.84' stroke-linecap='butt'/%3E%3C/svg%3E");
+  background-size:100% 100%;
+}
+@media(prefers-color-scheme:dark){
+  .day-pill.done.unplanned::before{
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='47' fill='none' stroke='%23AFA9EC' stroke-width='6' stroke-dasharray='9.84 9.84' stroke-linecap='butt'/%3E%3C/svg%3E");
+  }
+}
 .day-pill.sick{background:var(--amber-light);border-color:var(--amber)}
 .day-pill.sick .dn{color:var(--amber);font-weight:700}
 .day-pill.sick .dd{color:var(--amber);text-decoration:line-through}
+/* Ausfall auf eingeplantem Tag: zusätzlich lila Rand */
+.day-pill.sick.planned{border-color:var(--purple)}
 .day-pill.is-today::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--purple)}
 .day-pill.done.is-today::after{background:rgba(255,255,255,.7)}
 .day-pill.sick.is-today::after{background:var(--amber)}
@@ -115,6 +132,8 @@ h1{font-size:28px;font-weight:700;margin-bottom:4px}
 .prog-fill.partial{background:var(--amber)}
 .prog-fill.missed{background:var(--red-text)}
 .prog-fill.pending{background:var(--purple)}
+.prog-fill.almost{background:var(--amber)}
+.prog-fill.none{background:var(--border2)}
 
 /* History */
 .hist-section{margin-top:10px;border-top:0.5px solid var(--border);padding-top:10px}
@@ -124,6 +143,7 @@ h1{font-size:28px;font-weight:700;margin-bottom:4px}
 .hist-pills{display:flex;gap:3px;flex:1}
 .hp{width:22px;height:22px;border-radius:50%;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:var(--text3)}
 .hp.d{background:var(--purple);border-color:var(--purple);color:white}
+.hp.du{background:var(--purple);border-color:#fff;color:white;border-style:dashed;border-width:1.5px}
 .hp.m{background:var(--red-bg);border-color:var(--red-border);color:var(--red-text)}
 .hp.s{background:var(--amber-light);border-color:var(--amber);color:var(--amber)}
 .hist-score{font-size:11px;font-weight:600;min-width:40px;text-align:right;color:var(--text)}
@@ -192,6 +212,26 @@ h1{font-size:28px;font-weight:700;margin-bottom:4px}
 .settings-btn{background:none;border:0.5px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);padding:7px 11px;line-height:1;white-space:nowrap}
 .settings-btn:active{background:var(--border)}
 .settings-menu{position:absolute;right:0;top:calc(100% + 4px);background:var(--card);border:0.5px solid var(--border2);border-radius:var(--radius-sm);box-shadow:0 4px 24px rgba(0,0,0,.18);z-index:300;min-width:160px;overflow:hidden}
+
+/* Confirm-Dialog (Sicherheitsabfrage Reset) */
+.confirm-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;display:flex;align-items:center;justify-content:center;padding:24px}
+.confirm-box{background:var(--card);border-radius:var(--radius);width:100%;max-width:340px;padding:20px;border:0.5px solid var(--border2);box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.confirm-title{font-size:17px;font-weight:700;margin-bottom:8px;color:var(--text)}
+.confirm-text{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:14px}
+.confirm-strong{color:var(--red-text);font-weight:600}
+.confirm-check-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;cursor:pointer;padding:8px;border-radius:var(--radius-sm);border:0.5px solid var(--border2);background:var(--bg)}
+.confirm-check-row input{width:18px;height:18px;flex-shrink:0;accent-color:#E24B4A;cursor:pointer}
+.confirm-check-lbl{font-size:13px;color:var(--text);font-weight:500}
+.confirm-input-lbl{font-size:12px;color:var(--text2);margin:12px 0 6px;display:block}
+.confirm-input{width:100%;font-size:16px;padding:10px 12px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);margin-bottom:16px;-webkit-appearance:none;text-align:center;font-weight:600;letter-spacing:.05em}
+.confirm-input:focus{outline:2px solid #E24B4A;border-color:transparent}
+.confirm-btn-row{display:flex;gap:8px}
+.confirm-cancel{flex:1;background:none;border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:12px;font-size:14px;font-weight:600;color:var(--text2);cursor:pointer}
+.confirm-cancel:active{background:var(--border)}
+.confirm-delete{flex:1;background:#E24B4A;color:white;border:none;border-radius:var(--radius-sm);padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s}
+.confirm-delete:disabled{opacity:.4;cursor:not-allowed}
+.confirm-delete:not(:disabled):active{background:#c43b3a}
+
 .toast{position:fixed;bottom:calc(90px + var(--safe-bottom));left:50%;transform:translateX(-50%);background:#222;color:#fff;font-size:13px;font-weight:600;padding:10px 20px;border-radius:var(--radius-pill);z-index:999;opacity:0;transition:opacity .25s;white-space:nowrap;pointer-events:none}
 .toast.show{opacity:1}
 </style>
@@ -212,9 +252,9 @@ function migrate(raw){
     if(!r.weeks)r.weeks={};
     if(typeof r.goalPerWeek!=='number')r.goalPerWeek=3;
     if(typeof r.hasGoal!=='boolean')r.hasGoal=true;
-    if(typeof r.flexibleGoal!=='boolean')r.flexibleGoal=false; // v1.2: Ziel je Woche anpassbar
-    if(!Array.isArray(r.startDays))r.startDays=[];              // v1.2: Starttage-Vorlage
-    if(typeof r.showHistory!=='boolean')r.showHistory=false;     // v1.3: Historie ein/aus
+    if(typeof r.flexibleGoal!=='boolean')r.flexibleGoal=false;
+    if(!Array.isArray(r.startDays))r.startDays=[];
+    if(typeof r.showHistory!=='boolean')r.showHistory=false;
     Object.values(r.weeks).forEach(w=>{
       if(!w.sick)w.sick=[];
     });
@@ -236,8 +276,8 @@ let state=saved||{
   routines:[{id:1,name:'Training (PT/Maschine)',icon:'🏋️',goalPerWeek:3,hasGoal:true,flexibleGoal:false,startDays:[],showHistory:false,phase:{},weeks:{}}]
 };
 
-let ui={sheet:null,sheetData:null,manageIcons:false,expanded:null,menuOpen:null,settingsOpen:false};
-let _weekInitialized=false; // gesetzt wenn getWk eine neue Woche mit Starttagen anlegt
+let ui={sheet:null,sheetData:null,manageIcons:false,expanded:null,menuOpen:null,settingsOpen:false,confirmReset:false};
+let _weekInitialized=false;
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function getMonday(offset){
@@ -268,10 +308,9 @@ function getWk(r,offset){
   const k=weekKey(offset);
   if(!r.weeks[k]){
     r.weeks[k]={planned:[],done:[],sick:[]};
-    // Starttage nur für aktuelle und zukünftige Wochen beim ersten Aufruf setzen
     if(offset>=0&&r.startDays&&r.startDays.length>0){
       r.weeks[k].planned=[...r.startDays];
-      _weekInitialized=true; // wird nach render() persistiert
+      _weekInitialized=true;
     }
   }
   if(!r.weeks[k].sick)r.weeks[k].sick=[];
@@ -282,57 +321,80 @@ function getPhase(r,offset){
 }
 function setPhase(r,offset,v){r.phase[weekKey(offset)]=v;}
 
-// Effektives Wochenziel: bei flexibleGoal wird wk.goal (je Woche) bevorzugt, sonst Fixwert
+// Anzahl erledigter Tage, die NICHT als Ausfall markiert sind (Ausfall sticht Done).
+function doneCount(wk){
+  return wk.done.filter(d=>!(wk.sick||[]).includes(d)).length;
+}
+
+// Effektives Wochenziel: bei flexibleGoal wird wk.goal (je Woche) bevorzugt, sonst Fixwert.
+// Ausfalltage, die auf eingeplante Tage fallen, reduzieren das Ziel.
 function effectiveGoal(r,wk){
   if(!r.hasGoal)return null;
   const goal=(r.flexibleGoal&&typeof wk.goal==='number')?wk.goal:(r.goalPerWeek||3);
   const sickPlanned=(wk.sick||[]).filter(d=>wk.planned.includes(d)).length;
-  return Math.max(0,goal-sickPlanned); // 0 ist erlaubt (= diese Woche kein Ziel nötig)
+  return Math.max(0,goal-sickPlanned);
 }
 
+// 4-stufiger Status: none / pending / almost / met  (vergangene Wochen zusätzlich partial / missed)
 function goalStatus(done,effGoal,isCurrentWeek){
-  if(isCurrentWeek)return done>=effGoal?'met':'pending';
+  if(effGoal<=0)return done>0?'met':'none';
   if(done>=effGoal)return'met';
+  if(done===effGoal-1)return'almost';      // nur noch ein Tag fehlt
+  if(isCurrentWeek){
+    return done===0?'none':'pending';
+  }
+  // vergangene Woche, Ziel nicht erreicht
+  if(done===0)return'missed';
   if(done>=effGoal*0.5)return'partial';
   return'missed';
 }
 function goalLabel(status){
   if(status==='met')return'✓ Ziel erreicht';
+  if(status==='almost')return'◑ Fast am Ziel';
+  if(status==='pending')return'→ Auf dem Weg';
+  if(status==='none')return'○ Noch nichts gemacht';
   if(status==='partial')return'~ Teilweise';
-  if(status==='missed')return'✗ Verfehlt';
-  return'Auf dem Weg';
+  if(status==='missed')return'✗ Leider nein';
+  return'';
 }
 
 function routineStats(r){
   let tp=0,td=0,weeksMetGoal=0,weeksCounted=0;
   const currKey=weekKey(state.weekOffset);
   Object.entries(r.weeks).forEach(([k,w])=>{
-    tp+=w.planned.length;td+=w.done.length;
+    tp+=w.planned.length;td+=doneCount(w);
     if(k!==currKey&&w.planned.length>0){
       weeksCounted++;
       if(r.hasGoal){
         const wGoal=(r.flexibleGoal&&typeof w.goal==='number')?w.goal:(r.goalPerWeek||3);
         const effG=Math.max(0,wGoal-(w.sick||[]).filter(d=>w.planned.includes(d)).length);
-        if(effG>0&&w.done.length>=effG)weeksMetGoal++;
+        if(effG>0&&doneCount(w)>=effG)weeksMetGoal++;
       }
     }
   });
   return{tp,td,weeksMetGoal,weeksCounted};
 }
 
-// Globale Stats: Gesamtquote nur Vergangenheit + heute (keine Zukunft)
+// Globale Stats: Gesamtquote nur Vergangenheit + heute (keine Zukunft).
+// Geplante Tage, die als Ausfall markiert sind, fließen weder in geplant noch erledigt ein.
 function globalStats(){
   const todayDate=new Date();todayDate.setHours(0,0,0,0);
   const todayDayIdx=(todayDate.getDay()+6)%7; // Mo=0 … So=6
-  const realWeekKey=weekKey(0);               // immer die echte aktuelle Woche
+  const realWeekKey=weekKey(0);
   let tp=0,td=0;const wks=new Set();
   let onTrack=0,goalRoutines=0;
   state.routines.forEach(r=>{
     Object.entries(r.weeks).forEach(([k,w])=>{
-      if(k<realWeekKey){tp+=w.planned.length;td+=w.done.length;}
-      else if(k===realWeekKey){
-        tp+=w.planned.filter(d=>d<=todayDayIdx).length;
-        td+=w.done.filter(d=>d<=todayDayIdx).length;
+      const sick=w.sick||[];
+      // geplante Tage ohne Ausfall
+      const plannedEff=w.planned.filter(d=>!sick.includes(d));
+      // erledigte Tage ohne Ausfall (geplant ODER ungeplant)
+      const doneEff=w.done.filter(d=>!sick.includes(d));
+      if(k<realWeekKey){
+        tp+=plannedEff.length;td+=doneEff.length;
+      }else if(k===realWeekKey){
+        tp+=plannedEff.filter(d=>d<=todayDayIdx).length;
+        td+=doneEff.filter(d=>d<=todayDayIdx).length;
       }
     });
     Object.keys(r.weeks).forEach(k=>{if(r.weeks[k].planned.length>0)wks.add(k);});
@@ -340,7 +402,7 @@ function globalStats(){
       goalRoutines++;
       const wk=getWk(r,state.weekOffset);
       const effG=effectiveGoal(r,wk);
-      if(effG!==null&&effG>0&&wk.done.length>=effG)onTrack++;
+      if(effG!==null&&effG>0&&doneCount(wk)>=effG)onTrack++;
     }
   });
   return{tp,td,weeks:wks.size,onTrack,goalRoutines};
@@ -433,8 +495,9 @@ function render(){
     const phase=getPhase(r,state.weekOffset);
     const isCurrentWeek=state.weekOffset===0;
     const effG=effectiveGoal(r,wk);
-    const status=effG!==null?goalStatus(wk.done.length,effG,isCurrentWeek):null;
-    const pct=effG===null?0:effG===0?100:Math.min(100,Math.round(wk.done.length/effG*100));
+    const dCount=doneCount(wk);
+    const status=effG!==null?goalStatus(dCount,effG,isCurrentWeek):null;
+    const pct=effG===null?0:effG<=0?(dCount>0?100:0):Math.min(100,Math.round(dCount/effG*100));
     const {td,weeksMetGoal,weeksCounted}=routineStats(r);
     const hkeys=historyKeys(r);
     const isOpen=ui.expanded.has(r.id);
@@ -468,7 +531,7 @@ function render(){
     if(isOpen){
       const phaseHints={
         plan:'Tippe auf Tage, die du einplanen möchtest',
-        track:'Tippe auf geplante Tage, um sie abzuhaken',
+        track:'Tippe auf Tage, um sie abzuhaken (auch ungeplante zählen)',
         sick:'Tippe auf Tage zum Markieren als Ausfall (Krankheit / Urlaub)'
       };
       html+=`<div class="rcard-body">
@@ -486,9 +549,15 @@ function render(){
         const isS=wk.sick.includes(i);
         const isToday=date.getTime()===today.getTime();
         let cls='day-pill';
-        if(isS)cls+=' sick';
-        else if(isD)cls+=' done';
-        else if(isP)cls+=' planned';
+        if(isS){
+          cls+=' sick';
+          if(isP)cls+=' planned'; // Ausfall auf eingeplantem Tag: zusätzlich lila Rand
+        }else if(isD){
+          cls+=' done';
+          if(!isP)cls+=' unplanned'; // erledigt aber nicht geplant: gestrichelter Rand
+        }else if(isP){
+          cls+=' planned';
+        }
         if(isToday)cls+=' is-today';
         html+=`<div class="${cls}" data-dp="${r.id}" data-di="${i}">
           <span class="dn">${DAYS[i]}</span><span class="dd">${date.getDate()}</span>
@@ -497,7 +566,6 @@ function render(){
 
       html+=`</div>`;
 
-      // Wochenziel-Zeile: bei flexiblem Ziel immer sichtbar (auch bei 0), sonst ab ≥ 1
       if(r.hasGoal&&effG!==null){
         if(r.flexibleGoal){
           html+=`<div class="week-goal-row">
@@ -514,7 +582,6 @@ function render(){
             <span class="wg-fixed">${currentWeekGoal}</span>
           </div>`;
         }
-        // Badge + Balken: ab gesetztem Ziel ≥ 1, aktuelle/vergangene Woche
         if(currentWeekGoal>=1&&isCurrentOrPastWeek){
           html+=`<div class="goal-row">
             <span class="goal-badge ${status}">${goalLabel(status)}</span>
@@ -532,19 +599,24 @@ function render(){
           if(!w.sick)w.sick=[];
           const knum=k.split('-W')[1];
           const effGH=r.hasGoal?Math.max(0,((r.flexibleGoal&&typeof w.goal==='number')?w.goal:(r.goalPerWeek||3))-w.sick.filter(d=>w.planned.includes(d)).length):null;
-          const hStatus=(effGH&&effGH>0)?goalStatus(w.done.length,effGH,false):'nogoal';
+          const dCountH=doneCount(w);
+          const hStatus=(effGH&&effGH>0)?goalStatus(dCountH,effGH,false):'nogoal';
           html+=`<div class="hist-row">
             <span class="hist-kw">KW ${knum}</span>
             <div class="hist-pills">`;
           DAYS.forEach((_,i)=>{
             const isD2=w.done.includes(i);
             const isS2=w.sick.includes(i);
-            const isM=w.planned.includes(i)&&!isD2&&!isS2;
-            html+=`<div class="hp${isS2?' s':isD2?' d':isM?' m':''}">${DAYS[i]}</div>`;
+            const isP2=w.planned.includes(i);
+            let hp='';
+            if(isS2)hp=' s';
+            else if(isD2)hp=isP2?' d':' du'; // ungeplant erledigt: gestrichelt
+            else if(isP2)hp=' m';
+            html+=`<div class="hp${hp}">${DAYS[i]}</div>`;
           });
           html+=`</div>
             <div class="hist-dot ${hStatus}"></div>
-            <span class="hist-score">${r.hasGoal&&effGH?`${w.done.length}/${effGH}`:w.done.length}</span>
+            <span class="hist-score">${r.hasGoal&&effGH?`${dCountH}/${effGH}`:dCountH}</span>
           </div>`;
         });
         html+=`</div>`;
@@ -560,9 +632,34 @@ function render(){
   html+=`<input type="file" id="import-file" accept=".json" style="display:none">`;
 
   if(ui.sheet)html+=renderSheet();
+  if(ui.confirmReset)html+=renderConfirmReset();
   app.innerHTML=html;
   bindEvents();
-  if(_weekInitialized)persist(); // neu angelegte Wochen mit Starttagen sofort speichern
+  if(_weekInitialized)persist();
+}
+
+function renderConfirmReset(){
+  const total=state.routines.length;
+  return `<div class="confirm-bg" id="confirm-bg">
+    <div class="confirm-box">
+      <div class="confirm-title">⚠️ Daten zurücksetzen</div>
+      <div class="confirm-text">
+        Dies entfernt <span class="confirm-strong">unwiderruflich</span> alle ${total} Routine(n),
+        sämtliche Wochen-Einträge und Einstellungen.
+        Ein zuvor erstelltes Backup lässt sich über „Importieren" wiederherstellen.
+      </div>
+      <label class="confirm-check-row">
+        <input type="checkbox" id="confirm-check">
+        <span class="confirm-check-lbl">Mir ist bewusst, dass dies nicht rückgängig gemacht werden kann.</span>
+      </label>
+      <label class="confirm-input-lbl">Zur Bestätigung <b>LÖSCHEN</b> eingeben:</label>
+      <input class="confirm-input" id="confirm-input" type="text" autocomplete="off" autocapitalize="characters" placeholder="LÖSCHEN">
+      <div class="confirm-btn-row">
+        <button class="confirm-cancel" id="confirm-cancel">Abbrechen</button>
+        <button class="confirm-delete" id="confirm-delete" disabled>Endgültig löschen</button>
+      </div>
+    </div>
+  </div>`;
 }
 
 function renderSheet(){
@@ -572,7 +669,6 @@ function renderSheet(){
   html+=`<label class="form-label">Name</label>
     <input class="form-input" id="s-name" type="text" value="${d.name||''}" placeholder="z. B. Lesen, Meditation …">`;
 
-  // Wochenziel-Block
   html+=`<label class="form-label">Wochenziel</label>`;
   html+=`<div class="toggle-row">
       <span class="toggle-lbl">Wochenziel aktivieren</span>
@@ -639,23 +735,37 @@ function bindEvents(){
 
   el('btn-prev')&&(el('btn-prev').onclick=()=>{state.weekOffset--;persist();render();});
   el('btn-next')&&(el('btn-next').onclick=()=>{state.weekOffset++;persist();render();});
+
   el('btn-reset')&&(el('btn-reset').onclick=e=>{
     e.stopPropagation();
-    ui.settingsOpen=false;render();
-    const ok=confirm(
-      'Alle Daten unwiderruflich löschen?\n\n' +
-      'Routinen, Wochen-Einträge und Einstellungen werden vollständig entfernt. ' +
-      'Ein vorher erstelltes Backup kann über „Importieren" wiederhergestellt werden.'
-    );
-    if(!ok)return;
-    try{localStorage.removeItem(LS_KEY);}catch(e){}
-    // State auf Ausgangswert zurücksetzen
-    state={weekOffset:0,icons:[...DEFAULT_ICONS],routines:[]};
-    nextId=1;
-    ui={sheet:null,sheetData:null,manageIcons:false,expanded:new Set(),menuOpen:null,settingsOpen:false};
-    persist();render();
-    showToast('✓ Alle Daten gelöscht');
+    ui.settingsOpen=false;ui.confirmReset=true;render();
+    setTimeout(()=>el('confirm-input')&&el('confirm-input').focus(),80);
   });
+
+  // Confirm-Dialog (zweistufige Sicherheitsabfrage)
+  if(ui.confirmReset){
+    const updateDeleteBtn=()=>{
+      const chk=el('confirm-check');const inp=el('confirm-input');const btn=el('confirm-delete');
+      if(!chk||!inp||!btn)return;
+      const ok=chk.checked&&inp.value.trim().toUpperCase()==='LÖSCHEN';
+      btn.disabled=!ok;
+    };
+    el('confirm-check')&&(el('confirm-check').onchange=updateDeleteBtn);
+    el('confirm-input')&&(el('confirm-input').oninput=updateDeleteBtn);
+    el('confirm-cancel')&&(el('confirm-cancel').onclick=()=>{ui.confirmReset=false;render();});
+    el('confirm-bg')&&(el('confirm-bg').onclick=e=>{if(e.target===el('confirm-bg')){ui.confirmReset=false;render();}});
+    el('confirm-delete')&&(el('confirm-delete').onclick=()=>{
+      const chk=el('confirm-check');const inp=el('confirm-input');
+      if(!chk||!chk.checked||inp.value.trim().toUpperCase()!=='LÖSCHEN')return;
+      try{localStorage.removeItem(LS_KEY);}catch(e){}
+      state={weekOffset:0,icons:[...DEFAULT_ICONS],routines:[]};
+      nextId=1;
+      ui={sheet:null,sheetData:null,manageIcons:false,expanded:new Set(),menuOpen:null,settingsOpen:false,confirmReset:false};
+      persist();render();
+      showToast('✓ Alle Daten gelöscht');
+    });
+  }
+
   el('btn-settings')&&(el('btn-settings').onclick=e=>{
     e.stopPropagation();ui.settingsOpen=!ui.settingsOpen;render();
   });
@@ -669,7 +779,6 @@ function bindEvents(){
     render();setTimeout(()=>el('s-name')&&el('s-name').focus(),80);
   });
 
-  // Hamburger button: toggle dropdown
   q('[data-ham]').forEach(btn=>{
     btn.onclick=e=>{
       e.stopPropagation();
@@ -679,7 +788,6 @@ function bindEvents(){
     };
   });
 
-  // Card expand/collapse
   q('[data-toggle]').forEach(h=>{
     h.onclick=e=>{
       if(e.target.closest('[data-ham],[data-edit],[data-del],[data-phase],[data-dp],.drag-handle,.ham-menu'))return;
@@ -690,7 +798,6 @@ function bindEvents(){
     };
   });
 
-  // Week-Goal stepper (inline in Karte, je Woche)
   q('[data-wg-down]').forEach(btn=>{
     btn.onclick=e=>{
       e.stopPropagation();
@@ -710,7 +817,6 @@ function bindEvents(){
     };
   });
 
-  // Phase tabs
   q('[data-phase]').forEach(btn=>{
     btn.onclick=e=>{
       e.stopPropagation();
@@ -719,7 +825,6 @@ function bindEvents(){
     };
   });
 
-  // Day pills: plan / track / sick
   q('[data-dp]').forEach(pill=>{
     pill.onclick=e=>{
       e.stopPropagation();
@@ -736,11 +841,14 @@ function bindEvents(){
           wk.planned.push(di);
         }
       }else if(phase==='track'){
-        if(!wk.planned.includes(di))return;
-        if(wk.done.includes(di))wk.done=wk.done.filter(d=>d!==di);
-        else wk.done.push(di);
+        // Abhaken auch für ungeplante Tage erlaubt
+        if(wk.done.includes(di)){
+          wk.done=wk.done.filter(d=>d!==di);
+        }else{
+          wk.done.push(di);
+          wk.sick=wk.sick.filter(d=>d!==di); // erledigt hebt Ausfall auf
+        }
       }else if(phase==='sick'){
-        // Beliebige Tage als Ausfall markieren (auch nicht geplante)
         if(wk.sick.includes(di)){
           wk.sick=wk.sick.filter(d=>d!==di);
         }else{
@@ -752,7 +860,6 @@ function bindEvents(){
     };
   });
 
-  // Edit (from hamburger menu)
   q('[data-edit]').forEach(btn=>{
     btn.onclick=e=>{
       e.stopPropagation();
@@ -763,7 +870,6 @@ function bindEvents(){
     };
   });
 
-  // Delete (from hamburger menu)
   q('[data-del]').forEach(btn=>{
     btn.onclick=e=>{
       e.stopPropagation();
@@ -778,22 +884,16 @@ function bindEvents(){
     el('sheet-bg')&&(el('sheet-bg').onclick=e=>{if(e.target===el('sheet-bg')){ui.sheet=null;render();}});
     el('btn-sheet-cancel')&&(el('btn-sheet-cancel').onclick=()=>{ui.sheet=null;render();});
 
-    // hasGoal toggle
     el('s-has-goal')&&(el('s-has-goal').onchange=()=>{
       saveName();ui.sheetData.hasGoal=el('s-has-goal').checked;render();
     });
-
-    // flexibleGoal toggle
     el('s-flexible-goal')&&(el('s-flexible-goal').onchange=()=>{
       saveName();ui.sheetData.flexibleGoal=el('s-flexible-goal').checked;render();
     });
-
-    // showHistory toggle
     el('s-show-history')&&(el('s-show-history').onchange=()=>{
       saveName();ui.sheetData.showHistory=el('s-show-history').checked;
     });
 
-    // goalPerWeek stepper (Initialwert)
     el('step-down')&&(el('step-down').onclick=()=>{
       saveName();if(ui.sheetData.goalPerWeek>1)ui.sheetData.goalPerWeek--;render();
     });
@@ -841,8 +941,7 @@ function bindEvents(){
       if(d.mode==='add'){
         const r={id:nextId++,name,icon:d.icon,goalPerWeek:d.goalPerWeek,hasGoal:d.hasGoal!==false,flexibleGoal:d.flexibleGoal===true,showHistory:d.showHistory===true,startDays:[...d.days],phase:{},weeks:{}};
         state.routines.push(r);
-        const wk=getWk(r,state.weekOffset); // auto-füllt Starttage wenn offset>=0
-        // Bei vergangenen Wochen manuell befüllen (getWk übernimmt das nicht für offset<0)
+        const wk=getWk(r,state.weekOffset);
         if(state.weekOffset<0){d.days.forEach(i=>{if(!wk.planned.includes(i))wk.planned.push(i);});}
       }else{
         const r=state.routines.find(x=>x.id===d.id);
